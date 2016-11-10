@@ -1,0 +1,17 @@
+@model IEnumerable<BnB>
+
+<h1>Welcome to MattBnB</h1>
+
+<hr>
+
+<p>There are currently @Model.Count() B&B's.</p>
+
+<p>Create a <a href="/bnb/new">new B&B</a>.
+
+<div class="grid grid-2-800 grid-3-1024">
+    @foreach(var bnb in Model){
+        <a href="/bnb/@bnb.Id">
+            <h5>@bnb.Name</h5>
+        </a>
+    }
+</div>

@@ -1,0 +1,22 @@
+@model BnB
+
+<h1>@Model.Name</h1>
+
+<hr>
+
+@if(@Model.Messages.Count() != 0) {
+    <ul>
+        @foreach(var m in @Model.Messages){
+            <li>@m.Text - <em>@m.Visitor</em></li>
+        }
+    </ul>
+} else {
+    <p>There are no messages for @Model.Name</p>
+}
+
+<hr>
+
+<div asp-validation-summary="All"></div>
+
+<p>Leave a message for @Model.Name</p>
+@Html.Partial("CreateMessage", new Message{BnBId = @Model.Id})

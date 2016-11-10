@@ -1,0 +1,16 @@
+@model Message
+
+<form asp-controller="Home" asp-action="CreateMessage">
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label asp-for="Text" />
+        <input asp-for="Text" >
+    </div>
+
+    <input asp-for="Visitor" value="@ViewBag.Visitor" hidden>
+
+    <input asp-for="BnBId" hidden>
+
+    <button type="submit">Share message</button>
+</form>
