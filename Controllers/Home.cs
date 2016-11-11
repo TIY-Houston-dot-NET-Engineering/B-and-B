@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Session;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -53,16 +52,19 @@ public class HomeController : Controller
     [HttpGet("bnb/{id}")]
     public async Task<IActionResult> BnB(int id)
     {
-        ViewData["Visitor"] = (await auth.GetUser(HttpContext)).Email;
         BnB item = bnb.Read(id);
         if(item == null) return NotFound();
-
         return View("BnB", item);
     }
 
     [HttpPost("bnb/{id}/messages")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateMessage([FromForm] Message m, int id){
+        m.BnB = null;
+        string name = (await auth.GetUser(HttpContext))?.Email ?? "NOT PROVIDED";
+        m.Visitor = new Visitor { Name = name };
+        
+        TryValidateModel(m);
         
         if(ModelState.IsValid){
             db.Messages.Add(m);
@@ -112,6 +114,10 @@ public class HomeController : Controller
 }
 
 public class LoginVM {
+    [Required]
+    [EmailAddress]
     public string Email {get;set;}
+    [Required]
+    [DataType(DataType.Password)]
     public string Password {get;set;}
 }

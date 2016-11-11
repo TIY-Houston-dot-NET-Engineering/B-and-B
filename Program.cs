@@ -49,7 +49,7 @@ public partial class Handler {
     // --------------------------------------------------------
     protected SessionOptions _session = SessionOptions.Identity;
     protected bool _convertConnectionString = true;
-    protected DatabaseOptions _db = DatabaseOptions.Postgres;
+    protected DatabaseOptions _db = DatabaseOptions.InMemory;
     protected RestfulOptions _restful = RestfulOptions.CORS;
     protected SwaggerOptions _swagger = SwaggerOptions.UI;
     protected AuthOptions _auth = AuthOptions.Google | AuthOptions.Facebook;
@@ -224,8 +224,8 @@ public partial class Handler {
 
         Seed.Initialize(
             db, 
-            _db == DatabaseOptions.InMemory,
-            _db == DatabaseOptions.Postgres || _db == DatabaseOptions.Sqlite);
+            _db == DatabaseOptions.InMemory || _db == DatabaseOptions.Sqlite,
+            _db == DatabaseOptions.Postgres);
 
         app.UseApplicationInsightsRequestTelemetry();
         app.UseApplicationInsightsExceptionTelemetry();

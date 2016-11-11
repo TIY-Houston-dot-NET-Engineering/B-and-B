@@ -26,10 +26,12 @@ public class Message : HasId {
     public int Id { get; set; }
     [Required]
     public string Text { get; set; } = "";
-    [Required]
-    public string Visitor {get;set;} = "";
-
-    public int BnBId {get;set;}
+    
+    public int VisitorId {get;set;} // foreign key
+    public Visitor Visitor {get;set;}
+    
+    public int BnBId {get;set;} // foreign key
+    public BnB BnB {get;set;}
 }
 
 public class Visitor : HasId {
@@ -48,6 +50,7 @@ public class Visitor : HasId {
 public partial class DB : IdentityDbContext<IdentityUser> {
     public DbSet<BnB> BnBs { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<Visitor> Visitors { get; set; }
 }
 
 // create a Repo<T> services
@@ -57,5 +60,6 @@ public partial class Handler {
             dbset => dbset.Include(x => x.Messages));
 
         Repo<Message>.Register(services, "Messages");
+        Repo<Visitor>.Register(services, "Visitors");
     }
 }

@@ -7,7 +7,8 @@
 @if(@Model.Messages.Count() != 0) {
     <ul>
         @foreach(var m in @Model.Messages){
-            <li>@m.Text - <em>@m.Visitor</em></li>
+            <li>@m.Text</li>
+             @* <em>@m.Visitor</em></li> *@
         }
     </ul>
 } else {
@@ -19,4 +20,4 @@
 <div asp-validation-summary="All"></div>
 
 <p>Leave a message for @Model.Name</p>
-@Html.Partial("CreateMessage", new Message{BnBId = @Model.Id})
+@Html.Partial("CreateMessage", new Message{ BnB = @Model })
