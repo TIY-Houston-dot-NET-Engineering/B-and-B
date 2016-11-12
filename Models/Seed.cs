@@ -14,10 +14,10 @@ public static class Seed
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
         }
+
         if(mustMigrate) db.Database.Migrate();
 
         if(db.BnBs.Any()) return;
-
         var m = new Message { Text = "Hi" };
         var b = new BnB { Name = "TIY Houston" };
         b.Messages.Add(m);
