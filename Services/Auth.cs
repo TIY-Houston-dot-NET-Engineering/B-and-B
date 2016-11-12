@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 public interface IAuthService {
-    Task<bool> Login(string email, string pass);
+    Task<string> Login(string email, string pass);
     Task Logout();
-    Task<bool> Register(string email, string pass);
+    Task<IEnumerable<string>> Register(string email, string pass);
     Task<bool> ResetPassword(string email, Func<Object, string> getCallbackUrl);
     Task<IdentityUser> GetUser(HttpContext context);
 }
@@ -31,18 +31,29 @@ public class AuthService : IAuthService {
         this.emailer = emailer;
     }
 
-    public async Task<bool> Login(string email, string pass){
-        return (await s.PasswordSignInAsync(email, pass, true, lockoutOnFailure: false)).Succeeded;
+    public async Task<string> Login(string email, string pass){
+        var result = await s.PasswordSignInAsync(email, pass, true, lockoutOnFailure: false);
+        if(!result.Succeeded) 
+            return "Invalid login attempt.";
+        if(result.RequiresTwoFactor)
+            return "TwoFactor authentication is required.";
+        if(result.IsLockedOut)
+            return "This account is locked.";
+        return null;
     }
 
-    public async Task<bool> Register(string email, string pass){
+    public async Task<IEnumerable<string>> Register(string email, string pass){
         var user = new IdentityUser { UserName = email, Email = email };
-
-        if((await u.CreateAsync(user, pass)).Succeeded){
+        var result = await u.CreateAsync(user, pass);
+        if(result.Succeeded){
             await s.SignInAsync(user, isPersistent: true);
-            return true;
+            return null;
+        } else {
+            List<string> errors = new List<string>();
+            foreach (var error in result.Errors)
+                errors.Add(error.Description);
+            return errors;
         }
-        return false;
     }
 
     public async Task Logout() => await s.SignOutAsync();

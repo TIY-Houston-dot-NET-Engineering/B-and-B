@@ -57,9 +57,14 @@ public partial class DB : IdentityDbContext<IdentityUser> {
 public partial class Handler {
     public void RegisterRepos(IServiceCollection services){
         Repo<BnB>.Register(services, "BnBs", 
-            dbset => dbset.Include(x => x.Messages));
+            dbset => 
+                dbset
+                .Include(x => x.Messages)
+                .ThenInclude(x => x.Visitor));
 
-        Repo<Message>.Register(services, "Messages");
+        Repo<Message>.Register(services, "Messages",
+            dbset => 
+                dbset.Include(x => x.Visitor));
         Repo<Visitor>.Register(services, "Visitors");
     }
 }

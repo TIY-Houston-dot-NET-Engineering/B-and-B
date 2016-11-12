@@ -7,8 +7,7 @@
 @if(@Model.Messages.Count() != 0) {
     <ul>
         @foreach(var m in @Model.Messages){
-            <li>@m.Text</li>
-             @* <em>@m.Visitor</em></li> *@
+            <li>@m.Text - <em>@m.Visitor.Name</em></li>
         }
     </ul>
 } else {

@@ -81,24 +81,28 @@ public class HomeController : Controller
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login([FromForm] LoginVM user){
-        if(await auth.Login(user.Email, user.Password)){
+        string result = await auth.Login(user.Email, user.Password);
+        if(result == null) {
             // HttpContext.User
             // HttpContext.Session["SessionID"]
             return Redirect("/");
-        } else {
-            ModelState.AddModelError("", "That email/password combo does not exist");
-            return View("Login", user);
         }
+        
+        ModelState.AddModelError("", result);
+        return View("Login", user);
     }
 
     [HttpPost("register")]
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register([FromForm] LoginVM user){
-        if(await auth.Register(user.Email, user.Password)){
+        var errors = await auth.Register(user.Email, user.Password);
+        if((errors ?? new List<string>()).Count() == 0){
             return Redirect("/");
         } else {
-            ModelState.AddModelError("", "That email already exists in the database");
+            foreach(var e in errors)
+                ModelState.AddModelError("", e);
+
             return View("Login", user);
         }
     }

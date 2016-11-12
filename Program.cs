@@ -157,9 +157,9 @@ public partial class Handler {
 
         services.AddMvc(options =>
         {
-            if(!Env.IsDevelopment()) {
-                options.Filters.Add(new RequireHttpsAttribute());
-            }
+            // if(!Env.IsDevelopment()) {
+            //     options.Filters.Add(new RequireHttpsAttribute());
+            // }
         });
 
         RegisterRepos(services); // RegisterRepos() is defined in Models.cs
